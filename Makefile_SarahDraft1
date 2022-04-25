@@ -1,5 +1,5 @@
 CC=gcc
-OBJS = RLEList.o AsciiArtTool.o
+OBJS=RLEList.o AsciiArtTool.o
 EXEC=prog
 DEBUG=#now empty,  assign -g for debug
 CFLAGS=-std=c99 -Wall -Werror $(DEBUG)
