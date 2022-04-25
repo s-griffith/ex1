@@ -12,7 +12,9 @@
 #define FLAG 1
 #define SOURCE 2
 #define TARGET 3
-#define INVERSION '@'
+#define INVERSION_SPACE ' '
+#define INVERSION_AT '@'
+#define NUM_OF_ARG 4
 //----------------------------------------------------------------------
 
 
@@ -24,8 +26,7 @@ char invertAsciiArt(char inCharacter);
 
 
 int main(int argc, char* argv[]) {
-    if (argc != 4) {
-        printf("Invalid arguments, requirements: flag, source and target\n");
+    if (argc != NUM_OF_ARG) {
         return 0;
     }
 
@@ -36,18 +37,12 @@ int main(int argc, char* argv[]) {
     RLEList head = asciiArtRead(inStream);
 
     if (!strcmp(argv[FLAG],"-e")) {
-        printf("Temp\n");
-        /*
-         Need to fill in after completing function asciiArtPrintEncoded
-         */
+        asciiArtPrintEncoded(head, outStream);
     }
     else if (!strcmp(argv[FLAG],"-i")) {
         if (RLEListMap(head, invertAsciiArt) == RLE_LIST_SUCCESS) {
             asciiArtPrint(head, outStream);
         }
-    }
-    else {
-        printf("Invalid flags\n");
     }
 
     //Releasing resources
@@ -73,7 +68,10 @@ int main(int argc, char* argv[]) {
 */
 char invertAsciiArt(char inCharacter) {
     if (inCharacter == ' ') {
-        return INVERSION;
+        return INVERSION_AT;
+    }
+    else if (inCharacter == '@') {
+        return INVERSION_SPACE;
     }
     return inCharacter;
 }
