@@ -10,7 +10,7 @@ RLEList asciiArtRead(FILE* in_stream) {
     head = RLEListCreate();
 
     //If null arguments received or list not created
-    if ((!in_stream) || (head == NULL)) {
+    if ((!in_stream) || (!head)) {
         return NULL;
     }
 
@@ -20,7 +20,7 @@ RLEList asciiArtRead(FILE* in_stream) {
     //Compress the file
     while (!feof(in_stream)) {
         tempCharacter = fgetc(in_stream);
-        if (RLEListAppend(head, tempCharacter)) {
+        if (RLEListAppend(head, tempCharacter) != RLE_LIST_SUCCESS) {
             return NULL;
         }
     }
@@ -39,7 +39,10 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     //Initiate variable for the size of the list, the current character and the pointer for the result error
     int size = RLEListSize(list);
     char tempCharacter = '\0';
-    RLEListResult* result = (RLEListResult *)malloc(sizeof(*result));
+    RLEListResult* result = RLE_LIST_SUCCESS; //If doesn't work: RLEListResult* result = (RLEListResult*)malloc(sizeof(*result))
+    if (!result) {
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
 
     //Decompress linked list to file
     for (int i = 0; i < size - 1; i++) {
@@ -51,6 +54,28 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     }
 
     //Free resources and return success line
-    free(result);
+    //free(result);
+    return RLE_LIST_SUCCESS;
+}
+
+
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
+    if (!list || !out_stream) {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    char tempCharacter = '\0';
+    RLEListResult* result = RLE_LIST_SUCCESS; //(RLEListResult*)malloc(sizeof(*result));
+    if (!result) {
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
+    char* string = RLEListExportToString (list, result);
+    if (*result != RLE_LIST_SUCCESS) {
+        return *result;
+    }
+    while (string) {
+        fputc(*string, out_stream);
+        string++;
+    }
+    //free(result);
     return RLE_LIST_SUCCESS;
 }
