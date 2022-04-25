@@ -17,6 +17,7 @@ struct RLEList_t{
     RLEList next;
 };
 
+//What if the size is more than the max value of int?
 RLEList RLEListCreate() {
     RLEList node = (RLEList)malloc(sizeof(*node));
     if (node == NULL) {
