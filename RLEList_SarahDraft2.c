@@ -30,7 +30,7 @@ void RLEListDestroy (RLEList list) {
 }
 
 RLEListResult RLEListAppend (RLEList list, char value) {
-    if (list == NULL || &value == NULL)  { //how do you check that value is not null? if you do value == NULL, it gives an error 
+    if (list == NULL)  { //how do you check that value is not null? if you do value == NULL, it gives an error 
         return RLE_LIST_NULL_ARGUMENT;
     }
     if (list->appears == 0) {
@@ -69,7 +69,7 @@ int RLEListSize (RLEList list) {
 
 RLEListResult RLEListRemove (RLEList list, int index) {
     //Does the index count start at 1 or 0? From Piazza - search "remove"
-    if (list == NULL ||  &index == NULL) {
+    if (list == NULL) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     if (index <= 0) {
@@ -92,7 +92,7 @@ RLEListResult RLEListRemove (RLEList list, int index) {
 }
 
 char RLEListGet (RLEList list, int index, RLEListResult *result) { //if what is null the result will not be saved??
-    if (&index == NULL || list == NULL) {
+    if (list == NULL) {
         *result = RLE_LIST_NULL_ARGUMENT;
     }
     else if (index <= 0) {
