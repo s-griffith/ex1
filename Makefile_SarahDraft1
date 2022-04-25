@@ -7,6 +7,6 @@ CFLAGS=-std=c99 -Wall -Werror $(DEBUG)
 $(EXEC) : $(OBJS) $(CC) $(DEBUG_FLAG) $(OBJS) -o $@
 
 RLEList.o : RLEList.c RLEList.h
-AsciiArtTool.o : AsciiArtTool.c AsciiArtTool.h
+AsciiArtTool.o : tool/AsciiArtTool.c tool/AsciiArtTool.h
 
 clean: rm -f $(OBJS) $(EXEC)
