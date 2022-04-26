@@ -41,7 +41,7 @@ void RLEListDestroy (RLEList list) {
 }
 
 RLEListResult RLEListAppend (RLEList list, char value) {
-    if (list == NULL || value == NULL)  { //try inputting 0 as a scanf
+    if (list == NULL)  { //try inputting 0 as a scanf
         return RLE_LIST_NULL_ARGUMENT;
     }
     if (list->appears == 0) {
@@ -225,7 +225,7 @@ int translateToString (int appears, int index, char* string) {
     }
     for (int i = 0; i < (index-first)/2; i++) {
         temp = string[first+i];
-        string[first] == string[index-i-1];
+        string[first] = string[index-i-1];
         string[index-i-1]  = temp;
     }
     return index; //the next open index in the string
