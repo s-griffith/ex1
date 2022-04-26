@@ -70,7 +70,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
     }
     char* string = RLEListExportToString (list, result);
     if (*result != RLE_LIST_SUCCESS) {
-        return *result;
+        return *result; //need to only return RLE_NULL_ARGUMENT or RLE_LIST_SUCCESS?
     }
     while (string) {
         fputc(*string, out_stream);
