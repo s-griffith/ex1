@@ -1,8 +1,9 @@
-#include "RLEList.h"
-#include "AsciiArtTool.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "RLEList.h" //maybe add if not defined check?
+#include "AsciiArtTool.h"
 
 RLEList asciiArtRead(FILE* in_stream) {
     //Create new linked list
