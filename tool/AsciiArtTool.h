@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <RLEList.h> //maybe don't need to be here? or add check?
+#include "RLEList.h"
 
 /**
 * Ascii Art Tool
