@@ -4,6 +4,7 @@
 #include "RLEList.h"
 #include "AsciiArtTool.h"
 
+
 RLEList asciiArtRead(FILE* in_stream) {
     RLEList head = NULL;
     head = RLEListCreate();
@@ -38,21 +39,15 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     //Initiate variable for the size of the list, the current character and the pointer for the result error
     int size = RLEListSize(list);
     char tempCharacter = '\0';
-    RLEListResult* result = RLE_LIST_SUCCESS; //If doesn't work: RLEListResult* result = (RLEListResult*)malloc(sizeof(*result))
-    if (!result) {
-        return RLE_LIST_OUT_OF_MEMORY;
-    }
-
+    RLEListResult result = RLE_LIST_SUCCESS;
     //Decompress linked list to file
-    for (int i = 0; i < size - 1; i++) {
-        tempCharacter = RLEListGet(list, i, result);
-        if (*result != RLE_LIST_SUCCESS) {
-            return *result;
+    for (int i = 1; i < size; i++) {
+        tempCharacter = RLEListGet(list, i, &result);
+        if (result != RLE_LIST_SUCCESS) {
+            return result;
         }
         fputc(tempCharacter, out_stream);
     }
-
-    //free(result);
     return RLE_LIST_SUCCESS;
 }
 
@@ -61,18 +56,16 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
     if (!list || !out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEListResult* result = RLE_LIST_SUCCESS; //(RLEListResult*)malloc(sizeof(*result));
-    if (!result) {
-        return RLE_LIST_OUT_OF_MEMORY;
+    RLEListResult result = RLE_LIST_SUCCESS;
+    char* outputString = RLEListExportToString(list, &result);
+    if (result != RLE_LIST_SUCCESS) {
+        return result;
     }
-    char* outputString = RLEListExportToString (list, result);
-    if (*result != RLE_LIST_SUCCESS) {
-        return *result; //need to only return RLE_NULL_ARGUMENT or RLE_LIST_SUCCESS?
-    }
-    while (outputString) {
+    char* tempString = outputString;
+    while (*(outputString+3)) {
         fputc(*outputString, out_stream);
         outputString++;
     }
-    free(outputString);
+    free(tempString);
     return RLE_LIST_SUCCESS;
 }

@@ -40,7 +40,7 @@ void RLEListDestroy (RLEList list) {
 }
 
 RLEListResult RLEListAppend (RLEList list, char value) {
-    if (list == NULL)  { //try inputting 0 as a scanf
+    if (list == NULL)  {
         return RLE_LIST_NULL_ARGUMENT;
     }
     if (list->appears == 0) {
@@ -100,7 +100,20 @@ RLEListResult RLEListRemove(RLEList list, int index) {
     if (current->appears >= index) {
         if (current->appears == 1) {
             if (current != list) {
-                previous->next = current->next;
+                if (!current->next) {
+                    previous->next = NULL;
+                }
+                else if (previous->symbol == current->next->symbol) {
+                    previous->appears += current->next->appears;
+                    previous->next = current->next->next;
+                    free(current->next);
+                }
+                else {
+                    previous->next = current->next;
+                }
+            }
+            else {
+                list = list->next; //Make sure we can change list pointer
             }
             free(current);
         }
