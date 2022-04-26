@@ -1,16 +1,20 @@
 #include "RLEList.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+//------------------------Constants-------------------------------------
+#define INVALID -1
 #define NUM_OF_CATEGORIES 2
 #define CONVERT_TO_ASCII 48
 #define BASE_TEN 10
+//----------------------------------------------------------------------
+
 
 //------------------------Helper Functions------------------------------
-
 int numOfDigits (RLEList list);
 int translateToString (int appears, int index, char* string);
 int numOfNodes (RLEList list);
-
+void removeFirstNode(RLEList list);
 //----------------------------------------------------------------------
 
 struct RLEList_t{
@@ -66,8 +70,8 @@ RLEListResult RLEListAppend (RLEList list, char value) {
 }
 
 int RLEListSize (RLEList list) {
-    if (list == NULL) {
-        return -1;
+    if (!list) {
+        return INVALID;
     }
     int counter = 0;
     while (list != NULL) {
@@ -78,26 +82,20 @@ int RLEListSize (RLEList list) {
 }
 
 RLEListResult RLEListRemove(RLEList list, int index) {
-    //If null arguments received return output accordingly
     if (!list) {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if (index <= 0) {
+    if (index < 0) {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-
-    //Initiate new pointers to linked list
     RLEList current = list;
     RLEList previous = NULL;
-
-    //Go to letter with requested index
-    while ((current->appears < index) && (current->next)) {
+    while ((current->appears <= index) && (current->next)) {
         index -= current->appears;
         previous = current;
         current = current->next;
     }
-
-    if (current->appears >= index) {
+    if (current->appears > index) {
         if (current->appears == 1) {
             if (current != list) {
                 if (!current->next) {
@@ -112,8 +110,9 @@ RLEListResult RLEListRemove(RLEList list, int index) {
                     previous->next = current->next;
                 }
             }
-            else {
-                list = list->next; //Make sure we can change list pointer
+            else if (current->next) {
+                current = list->next;
+                removeFirstNode(list);
             }
             free(current);
         }
@@ -126,25 +125,19 @@ RLEListResult RLEListRemove(RLEList list, int index) {
 }
 
 char RLEListGet(RLEList list, int index, RLEListResult *result) {
-    //If null arguments received return output accordingly
     if ((!list) && (result)) {
         *result = RLE_LIST_NULL_ARGUMENT;
     }
-    else if ((index <= 0) && (result)) {
+    else if ((index < 0) && (result)) {
         *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-    else if ((list) && (index > 0)) {
-        //Initiate new pointer to linked list
+    else if ((list) && (index >= 0)) {
         RLEList current = list;
-
-        //Go to letter with requested index
-        while ((current->appears < index) && (current->next)) {
+        while ((current->appears <= index) && (current->next)) {
             index -= current->appears;
             current = current->next;
         }
-
-        //If the requested index was found, return the requested character
-        if (current->appears >= index) {
+        if (current->appears > index) {
             if (result) {
                 *result = RLE_LIST_SUCCESS;
             }
@@ -157,7 +150,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result) {
     return 0;
 }
 
-char* RLEListExportToString (RLEList list, RLEListResult* result) {
+char* RLEListExportToString(RLEList list, RLEListResult* result) {
     if (list == NULL) {
         if (result != NULL) {
             *result = RLE_LIST_NULL_ARGUMENT;
@@ -188,25 +181,21 @@ char* RLEListExportToString (RLEList list, RLEListResult* result) {
  }
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
-    //If null arguments received return output accordingly
     if ((!list) || (!map_function)) {
         return RLE_LIST_NULL_ARGUMENT;
     }
-
     RLEList current = list;
-
-    //Change characters in linked list according to the function received
     while (current) {
         current->symbol = map_function(current->symbol);
         current = current->next;
     }
-
     return RLE_LIST_SUCCESS;
 }
 
 
 //------------------------Helper Functions------------------------------
 
+//Count the number of digits in the appearances of all the nodes of the linked list
 int numOfDigits (RLEList list) {
     int appearsTemp = 0, counter = 0;
     RLEList current = list;
@@ -221,6 +210,7 @@ int numOfDigits (RLEList list) {
     return counter;
 }
 
+//Convert integer number to string
 int translateToString (int appears, int index, char* string) {
     int first = index;
     char temp;
@@ -237,6 +227,7 @@ int translateToString (int appears, int index, char* string) {
     return index; //the next open index in the string
 }
 
+//Count the number of nodes in the linked list
 int numOfNodes (RLEList list) {
     int counter = 0;
     while (list != NULL) {
@@ -244,4 +235,11 @@ int numOfNodes (RLEList list) {
         list = list->next;
     }
     return counter;
+}
+
+//Remove the first node in the list by copying the second node into the first
+void removeFirstNode(RLEList list) {
+    list->appears = list->next->appears;
+    list->symbol = list->next->symbol;
+    list->next = list->next->next;
 }
