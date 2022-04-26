@@ -64,7 +64,6 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
     if (!list || !out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    char tempCharacter = '\0';
     RLEListResult* result = RLE_LIST_SUCCESS; //(RLEListResult*)malloc(sizeof(*result));
     if (!result) {
         return RLE_LIST_OUT_OF_MEMORY;
