@@ -1,12 +1,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "RLEList.h" //maybe add if not defined check?
+#include "RLEList.h"
 #include "AsciiArtTool.h"
 
 RLEList asciiArtRead(FILE* in_stream) {
-    //Create new linked list
     RLEList head = NULL;
     head = RLEListCreate();
 
@@ -54,7 +52,6 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
         fputc(tempCharacter, out_stream);
     }
 
-    //Free resources and return success line
     //free(result);
     return RLE_LIST_SUCCESS;
 }
@@ -68,14 +65,14 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
     if (!result) {
         return RLE_LIST_OUT_OF_MEMORY;
     }
-    char* string = RLEListExportToString (list, result);
+    char* outputString = RLEListExportToString (list, result);
     if (*result != RLE_LIST_SUCCESS) {
         return *result; //need to only return RLE_NULL_ARGUMENT or RLE_LIST_SUCCESS?
     }
-    while (string) {
-        fputc(*string, out_stream);
-        string++;
+    while (outputString) {
+        fputc(*outputString, out_stream);
+        outputString++;
     }
-    //free(result);
+    free(outputString);
     return RLE_LIST_SUCCESS;
 }

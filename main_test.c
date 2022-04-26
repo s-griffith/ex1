@@ -39,6 +39,7 @@ int main() {
     error = RLEListAppend(head, 'a');
     error = RLEListAppend(head, 'b');
     error = RLEListAppend(head, 'a');
+    error = RLEListAppend(head, NULL);
     error = RLEListAppend(head, 'c');
     error = RLEListAppend(head, 'c');
     error = RLEListAppend(head, 'c');

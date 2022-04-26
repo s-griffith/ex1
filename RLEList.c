@@ -19,7 +19,6 @@ struct RLEList_t{
     RLEList next;
 };
 
-//What if the size is more than the max value of int?
 RLEList RLEListCreate() {
     RLEList node = (RLEList)malloc(sizeof(*node));
     if (!node) {
@@ -98,7 +97,6 @@ RLEListResult RLEListRemove(RLEList list, int index) {
         current = current->next;
     }
 
-    //If the requested index was found, remove node
     if (current->appears >= index) {
         if (current->appears == 1) {
             if (current != list) {
@@ -109,10 +107,8 @@ RLEListResult RLEListRemove(RLEList list, int index) {
         else {
             current->appears -= 1;
         }
-        //The removal was completed successfully
         return RLE_LIST_SUCCESS;
     }
-    //Otherwise, return result accordingly
     return RLE_LIST_INDEX_OUT_OF_BOUNDS;
 }
 
@@ -141,7 +137,6 @@ char RLEListGet(RLEList list, int index, RLEListResult *result) {
             }
             return current->symbol;
         }
-        //Otherwise, return result accordingly
         if (result) {
             *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         }
@@ -156,7 +151,7 @@ char* RLEListExportToString (RLEList list, RLEListResult* result) {
         }
         return NULL;
     }
-    int size = numOfDigits(list) + NUM_OF_CATEGORIES*numOfNodes(list) + 1;
+    int size = numOfDigits(list) + (NUM_OF_CATEGORIES * numOfNodes(list)) + 1;
     char *string = (char*)malloc(sizeof(char)*size); //free! - by user
     if (string == NULL) {
         if (result != NULL) {
@@ -185,7 +180,6 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
         return RLE_LIST_NULL_ARGUMENT;
     }
 
-    //Initiate new pointer to linked list
     RLEList current = list;
 
     //Change characters in linked list according to the function received
@@ -194,7 +188,6 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
         current = current->next;
     }
 
-    //The mapping was completed successfully
     return RLE_LIST_SUCCESS;
 }
 
