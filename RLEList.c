@@ -24,7 +24,8 @@ struct RLEList_t{
 };
 
 RLEList RLEListCreate() {
-    RLEList node = (RLEList)malloc(sizeof(*node));
+    RLEList node = NULL;
+    node = calloc(1, sizeof(*node));
     if (!node) {
         return NULL;
     }
@@ -36,7 +37,7 @@ RLEList RLEListCreate() {
 
 void RLEListDestroy (RLEList list) {
     RLEList temp = list;
-    while (!temp) {
+    while (temp) {
         temp = list->next;
         free(list);
         list = temp;
@@ -44,7 +45,7 @@ void RLEListDestroy (RLEList list) {
 }
 
 RLEListResult RLEListAppend (RLEList list, char value) {
-    if (list == NULL)  {
+    if (!list)  {
         return RLE_LIST_NULL_ARGUMENT;
     }
     if (list->appears == 0) {
@@ -52,7 +53,7 @@ RLEListResult RLEListAppend (RLEList list, char value) {
         list->appears++;
         return RLE_LIST_SUCCESS;
     }
-    while (list->next != NULL) {
+    while (list->next) {
         list = list->next;
     }
     if (list->symbol == value) {
@@ -60,7 +61,7 @@ RLEListResult RLEListAppend (RLEList list, char value) {
         return RLE_LIST_SUCCESS;
     }
     RLEList node = RLEListCreate();
-    if (node == NULL) {
+    if (!node) {
         return RLE_LIST_OUT_OF_MEMORY;
     }
     node->symbol = value;
@@ -74,7 +75,7 @@ int RLEListSize (RLEList list) {
         return INVALID;
     }
     int counter = 0;
-    while (list != NULL) {
+    while (list) {
         counter += list->appears;
         list = list->next;
     }
@@ -130,11 +131,15 @@ RLEListResult RLEListRemove(RLEList list, int index) {
 }
 
 char RLEListGet(RLEList list, int index, RLEListResult *result) {
-    if ((!list) && (result)) {
-        *result = RLE_LIST_NULL_ARGUMENT;
+    if (!list) {
+        if (result) {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
     }
-    else if (((index < 0) || ((list->appears == 0) && !(list->next))) && (result)) {
-        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    else if ((index < 0) || ((list->appears == 0) && !(list->next))) {
+        if (result) {
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
     }
     else if ((list) && (index >= 0)) {
         RLEList current = list;
@@ -156,22 +161,22 @@ char RLEListGet(RLEList list, int index, RLEListResult *result) {
 }
 
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
-    if (list == NULL) {
-        if (result != NULL) {
+    if (!list) {
+        if (result) {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
         return NULL;
     }
     int size = numOfDigits(list) + (NUM_OF_CATEGORIES * numOfNodes(list)) + 1;
     char *string = (char*)malloc(sizeof(char)*size); //free! - by user
-    if (string == NULL) {
-        if (result != NULL) {
+    if (!string) {
+        if (result) {
             *result = RLE_LIST_OUT_OF_MEMORY;
         }
         return NULL;
     }
     int index = 0;
-    while (list != NULL) {
+    while (list) {
         string[index++] = list->symbol;
         index = translateToString(list->appears, index, string);
         string[index] = '\n';
@@ -179,7 +184,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         list = list->next;
     }
     string[index] = '\0';
-    if (result != NULL) {
+    if (result) {
         *result = RLE_LIST_SUCCESS;
     }
     return string;
@@ -235,14 +240,14 @@ int translateToString (int appears, int index, char* string) {
 //Count the number of nodes in the linked list
 int numOfNodes (RLEList list) {
     int counter = 0;
-    while (list != NULL) {
+    while (list) {
         counter++;
         list = list->next;
     }
     return counter;
 }
 
-//Remove the first node in the list by copying the second node into the first
+//Copy the the second node into the first so the second node can be removed
 void removeFirstNode(RLEList list) {
     list->appears = list->next->appears;
     list->symbol = list->next->symbol;
