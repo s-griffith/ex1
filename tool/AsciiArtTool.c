@@ -41,7 +41,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     char tempCharacter = '\0';
     RLEListResult result = RLE_LIST_SUCCESS;
     //Decompress linked list to file
-    for (int i = 1; i < size; i++) {
+    for (int i = 0; i < size - 1; i++) {
         tempCharacter = RLEListGet(list, i, &result);
         if (result != RLE_LIST_SUCCESS) {
             return result;

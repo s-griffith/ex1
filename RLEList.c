@@ -6,7 +6,6 @@
 #define INVALID -1
 #define NUM_OF_CATEGORIES 2
 #define CONVERT_TO_ASCII 48
-#define BASE_TEN 10
 //----------------------------------------------------------------------
 
 
@@ -212,7 +211,7 @@ int numOfDigits (RLEList list) {
     while (current) {
         appearsTemp = current->appears;
         while (appearsTemp > 0) {
-            appearsTemp /= BASE_TEN;
+            appearsTemp /= 10;
             counter++;
         }
         current = current->next;
@@ -225,8 +224,8 @@ int translateToString (int appears, int index, char* string) {
     int first = index;
     char temp;
     while (appears > 0) {
-        string[index] = (appears % BASE_TEN) + CONVERT_TO_ASCII;
-        appears /= BASE_TEN;
+        string[index] = (appears % 10) + CONVERT_TO_ASCII;
+        appears /= 10;
         index++;
     }
     for (int i = 0; i < (index-first)/2; i++) {
