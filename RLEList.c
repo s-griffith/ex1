@@ -222,16 +222,16 @@ int numOfDigits (RLEList list) {
 //Convert integer number to string
 int translateToString (int appears, int index, char* string) {
     int first = index;
-    char temp;
+    char temp = '\0';
     while (appears > 0) {
         string[index] = (appears % 10) + CONVERT_TO_ASCII;
         appears /= 10;
         index++;
     }
-    for (int i = 0; i < (index-first)/2; i++) {
-        temp = string[first+i];
-        string[first] = string[index-i-1];
-        string[index-i-1]  = temp;
+    for (int i = 0; i < (index - first)/2; i++) {
+        temp = string[first + i];
+        string[first + i] = string[index - i - 1];
+        string[index - i - 1]  = temp;
     }
     return index; //the next open index in the string
 }
