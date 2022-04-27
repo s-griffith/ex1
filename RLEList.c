@@ -109,12 +109,17 @@ RLEListResult RLEListRemove(RLEList list, int index) {
                 else {
                     previous->next = current->next;
                 }
+                free(current);
             }
             else if (current->next) {
                 current = list->next;
                 removeFirstNode(list);
+                free(current);
             }
-            free(current);
+            else {
+                current->appears = 0;
+                current->symbol = '\0';
+            }
         }
         else {
             current->appears -= 1;
@@ -128,7 +133,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result) {
     if ((!list) && (result)) {
         *result = RLE_LIST_NULL_ARGUMENT;
     }
-    else if ((index < 0) && (result)) {
+    else if (((index < 0) || ((list->appears == 0) && !(list->next))) && (result)) {
         *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     else if ((list) && (index >= 0)) {
