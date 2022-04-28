@@ -35,6 +35,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     if ((!out_stream) || (!list)) {
         return RLE_LIST_NULL_ARGUMENT;
     }
+    File* tempFile = out_Stream;
 
     //Initiate variable for the size of the list, the current character and the pointer for the result error
     int size = RLEListSize(list);
@@ -44,9 +45,12 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     for (int i = 0; i < size - 1; i++) {
         tempCharacter = RLEListGet(list, i, &result);
         if (result != RLE_LIST_SUCCESS) {
+            if (result == RLE_LIST_INDEX_OUT_OF_BOUNDS) {
+                return RLE_LIST_ERROR;
+            }
             return result;
         }
-        fputc(tempCharacter, out_stream);
+        fputc(tempCharacter, tempFile);
     }
     return RLE_LIST_SUCCESS;
 }
@@ -57,13 +61,14 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEListResult result = RLE_LIST_SUCCESS;
+    File* tempFile = out_Stream;
     char* outputString = RLEListExportToString(list, &result);
     if (result != RLE_LIST_SUCCESS) {
         return result;
     }
     char* tempString = outputString;
     while (*(outputString+3)) {
-        fputc(*outputString, out_stream);
+        fputc(*outputString, tempFile);
         outputString++;
     }
     free(tempString);

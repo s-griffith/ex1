@@ -35,13 +35,14 @@ int main(int argc, char* argv[]) {
 
     //Read file and compress to RLE linked list
     RLEList head = asciiArtRead(inStream);
+    RLEListResult result = RLE_LIST_SUCCESS;
 
     if (!strcmp(argv[FLAG],"-e")) {
-        asciiArtPrintEncoded(head, outStream);
+        result = asciiArtPrintEncoded(head, outStream);
     }
     else if (!strcmp(argv[FLAG],"-i")) {
         if (RLEListMap(head, invertAsciiArt) == RLE_LIST_SUCCESS) {
-            asciiArtPrint(head, outStream);
+            result = asciiArtPrint(head, outStream);
         }
     }
 
