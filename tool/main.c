@@ -26,31 +26,41 @@ char invertAsciiArt(char inCharacter);
 
 
 int main(int argc, char* argv[]) {
-    if (argc != NUM_OF_ARG) {
+    if ((argc < 3) || (argc > 4)) {
         return 0;
     }
 
-    FILE* inStream = fopen(argv[SOURCE], "r");
-    FILE* outStream = fopen(argv[TARGET], "w");
-
-    //Read file and compress to RLE linked list
-    RLEList head = asciiArtRead(inStream);
+    FILE* inStream = NULL;
+    FILE* outStream = NULL;
     RLEListResult result = RLE_LIST_SUCCESS;
 
-    if (!strcmp(argv[FLAG],"-e")) {
-        result = asciiArtPrintEncoded(head, outStream);
-    }
-    else if (!strcmp(argv[FLAG],"-i")) {
-        if (RLEListMap(head, invertAsciiArt) == RLE_LIST_SUCCESS) {
-            result = asciiArtPrint(head, outStream);
+    if ((inStream = fopen(argv[SOURCE], "r")) != NULL) {
+        if (argv[TARGET] == NULL) {
+            outStream = fopen("newOutput.txt", "w");
         }
+        else {
+            outStream = fopen(argv[TARGET], "w");
+        }
+
+        //Read file and compress to RLE linked list
+        RLEList head = asciiArtRead(inStream);
+
+        if (!strcmp(argv[FLAG],"-e")) {
+            result = asciiArtPrintEncoded(head, outStream);
+        }
+        else if (!strcmp(argv[FLAG],"-i")) {
+            if (RLEListMap(head, invertAsciiArt) == RLE_LIST_SUCCESS) {
+                result = asciiArtPrint(head, outStream);
+            }
+        }
+        RLEListDestroy(head);
+        fclose(outStream);
+        fclose(inStream);
     }
 
-    //Releasing resources
-    fclose(inStream);
-    fclose(outStream);
-    RLEListDestroy(head);
-
+    if (result == 0) {
+        return result;
+    }
     return 0;
 }
 
