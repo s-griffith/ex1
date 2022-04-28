@@ -1,6 +1,6 @@
 CC=gcc
 OBJS=tool/AsciiArtTool.o tool/main.o RLEList.o
-EXEC=prog
+EXEC=AsciiArtTool
 DEBUG=#now empty,  assign -g for debug
 CFLAGS=-std=c99 -I/home/mtm/public/2122b/ex1 -Itool -Wall -Werror -pedantic-errors -DNDEBUG $(DEBUG)
 
