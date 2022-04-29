@@ -89,7 +89,7 @@ int RLEListSize (RLEList list)
     return counter;
 }
 
-//
+//Removes node or character at a given index.
 RLEListResult RLEListRemove(RLEList list, int index) 
 {
     if (!list) {
