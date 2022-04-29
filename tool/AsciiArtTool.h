@@ -1,6 +1,3 @@
-//
-//Created by Lior and Sarah on April 25, 2022.
-//
 #ifndef HW1_ASCIIARTTOOL_H
 #define HW1_ASCIIARTTOOL_H
 
