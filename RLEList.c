@@ -22,7 +22,9 @@ struct RLEList_t{
     RLEList next;
 };
 
-RLEList RLEListCreate() {
+//Creates the first node of a list.
+RLEList RLEListCreate() 
+{
     RLEList node = NULL;
     node = calloc(1, sizeof(*node));
     if (!node) {
@@ -34,7 +36,9 @@ RLEList RLEListCreate() {
     return node;
 }
 
-void RLEListDestroy (RLEList list) {
+//Destroys the list.
+void RLEListDestroy (RLEList list) 
+{
     RLEList temp = list;
     while (temp) {
         temp = list->next;
@@ -43,7 +47,9 @@ void RLEListDestroy (RLEList list) {
     }
 }
 
-RLEListResult RLEListAppend (RLEList list, char value) {
+//Increases appearances if the new symbol is identical to the previous symbol. Otherwise, adds a new node at the end.
+RLEListResult RLEListAppend (RLEList list, char value) 
+{
     if (!list)  {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -69,7 +75,9 @@ RLEListResult RLEListAppend (RLEList list, char value) {
     return RLE_LIST_SUCCESS;
 }
 
-int RLEListSize (RLEList list) {
+//Returns the number of characters the list represents.
+int RLEListSize (RLEList list) 
+{
     if (!list) {
         return INVALID;
     }
@@ -81,7 +89,9 @@ int RLEListSize (RLEList list) {
     return counter;
 }
 
-RLEListResult RLEListRemove(RLEList list, int index) {
+//
+RLEListResult RLEListRemove(RLEList list, int index) 
+{
     if (!list) {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -90,13 +100,19 @@ RLEListResult RLEListRemove(RLEList list, int index) {
     }
     RLEList current = list;
     RLEList previous = NULL;
+
+    //Finds the requested index in the list. Saves the previous index for later use.
     while ((current->appears <= index) && (current->next)) {
         index -= current->appears;
         previous = current;
         current = current->next;
     }
+
+    //Checks if the node needs to be removed entirely, or just decrease the appearances of the char.
     if (current->appears > index) {
+        //The following happens when there is a necessity to remove an entire node.
         if (current->appears == 1) {
+            //The following happens if the index does not belong to the first node of the list.
             if (current != list) {
                 if (!current->next) {
                     previous->next = NULL;
@@ -111,11 +127,13 @@ RLEListResult RLEListRemove(RLEList list, int index) {
                 }
                 free(current);
             }
+            //This happens when the index belongs to the first node, but it is not the only node in the list.
             else if (current->next) {
                 current = list->next;
                 removeFirstNode(list);
                 free(current);
             }
+            //This happens when the index belongs to the one and only node of the list.
             else {
                 current->appears = 0;
                 current->symbol = '\0';
@@ -129,7 +147,9 @@ RLEListResult RLEListRemove(RLEList list, int index) {
     return RLE_LIST_INDEX_OUT_OF_BOUNDS;
 }
 
-char RLEListGet(RLEList list, int index, RLEListResult *result) {
+//Returns the character at a given index. If the character is not found for whatever reason, return 0.
+char RLEListGet(RLEList list, int index, RLEListResult *result) 
+{
     if (!list) {
         if (result) {
             *result = RLE_LIST_NULL_ARGUMENT;
@@ -140,8 +160,10 @@ char RLEListGet(RLEList list, int index, RLEListResult *result) {
             *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         }
     }
+    //If the index and list are both legitimate:
     else if ((list) && (index >= 0)) {
         RLEList current = list;
+        //Finds the requested index.
         while ((current->appears <= index) && (current->next)) {
             index -= current->appears;
             current = current->next;
@@ -159,14 +181,18 @@ char RLEListGet(RLEList list, int index, RLEListResult *result) {
     return 0;
 }
 
-char* RLEListExportToString(RLEList list, RLEListResult* result) {
+//Translates the RLEList into a string in its compressed version.
+char* RLEListExportToString(RLEList list, RLEListResult* result) 
+{
     if (!list) {
         if (result) {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
         return NULL;
     }
-    int size = numOfDigits(list) + (NUM_OF_CATEGORIES * numOfNodes(list)) + 1;
+    //Adds 1 to the necessary size for the character '/0' at the end of the string
+    int size = numOfDigits(list);
+    size += (NUM_OF_CATEGORIES * numOfNodes(list)) + 1;
     char *string = (char*)malloc(sizeof(char)*size); //free! - by user
     if (!string) {
         if (result) {
@@ -175,6 +201,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         return NULL;
     }
     int index = 0;
+    //Inputs the correct characters in the appropriate cells of the string.
     while (list) {
         string[index++] = list->symbol;
         index = translateToString(list->appears, index, string);
@@ -189,7 +216,9 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
     return string;
  }
 
-RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
+//Translates the list characters according to the given function.
+RLEListResult RLEListMap(RLEList list, MapFunction map_function) 
+{
     if ((!list) || (!map_function)) {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -205,7 +234,8 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
 //------------------------Helper Functions------------------------------
 
 //Count the number of digits in the appearances of all the nodes of the linked list
-int numOfDigits (RLEList list) {
+int numOfDigits (RLEList list) 
+{
     int appearsTemp = 0, counter = 0;
     RLEList current = list;
     while (current) {
@@ -220,7 +250,8 @@ int numOfDigits (RLEList list) {
 }
 
 //Convert integer number to string
-int translateToString (int appears, int index, char* string) {
+int translateToString (int appears, int index, char* string) 
+{
     int first = index;
     char temp = '\0';
     while (appears > 0) {
@@ -233,11 +264,13 @@ int translateToString (int appears, int index, char* string) {
         string[first + i] = string[index - i - 1];
         string[index - i - 1]  = temp;
     }
-    return index; //the next open index in the string
+    //Returns the next open index in the string.
+    return index;
 }
 
 //Count the number of nodes in the linked list
-int numOfNodes (RLEList list) {
+int numOfNodes (RLEList list) 
+{
     int counter = 0;
     while (list) {
         counter++;
@@ -247,7 +280,8 @@ int numOfNodes (RLEList list) {
 }
 
 //Copy the the second node into the first so the second node can be removed
-void removeFirstNode(RLEList list) {
+void removeFirstNode(RLEList list) 
+{
     list->appears = list->next->appears;
     list->symbol = list->next->symbol;
     list->next = list->next->next;
