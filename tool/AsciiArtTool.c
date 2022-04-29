@@ -3,8 +3,9 @@
 #include "RLEList.h"
 #include "AsciiArtTool.h"
 
-
-RLEList asciiArtRead(FILE* in_stream) {
+//Compresses data from a given file into an RLEList.
+RLEList asciiArtRead(FILE* in_stream) 
+{
     RLEList head = NULL;
     head = RLEListCreate();
     if ((!in_stream) || (!head)) {
@@ -20,8 +21,9 @@ RLEList asciiArtRead(FILE* in_stream) {
     return head;
 }
 
-
-RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
+//Decompresses the RLEList into an output file.
+RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) 
+{
     if ((!out_stream) || (!list)) {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -41,8 +43,9 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream) {
     return RLE_LIST_SUCCESS;
 }
 
-
-RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
+///Prints compressed list into a given output file.
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) 
+{
     if (!list || !out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
@@ -52,7 +55,8 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream) {
         return result;
     }
     char* tempString = outputString;
-    while (*(tempString+3)) {
+    //Goes through the string term by term.
+    while (*(tempString + 3)) {
         fputc(*tempString, out_stream);
         tempString++;
     }
